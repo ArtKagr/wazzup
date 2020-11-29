@@ -1,5 +1,7 @@
 export default {
   // Global page headers (https://go.nuxtjs.dev/config-head)
+  mode: 'spa',
+  target: 'server',
   head: {
     title: 'wazzup-test',
     meta: [
@@ -32,9 +34,18 @@ export default {
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
     // https://go.nuxtjs.dev/bootstrap
-    'bootstrap-vue/nuxt'
+    'bootstrap-vue/nuxt',
+    '@nuxtjs/axios'
   ],
-
+  axios: {
+    // prefix: '/api/',
+    baseURL: process.env.API_URL || 'https://app.dev-wazzup24.com'
+  },
+  bootstrapVue: {
+    icons: true,
+    bootstrapCSS: false,
+    bootstrapVueCSS: false
+  },
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
   }
