@@ -20,7 +20,7 @@
         <b-input-group class="filter">
           <b-form-input
             v-model="filterData"
-            placeholder="Фильтр"
+            placeholder="Filter"
             class="bg-disabled-white mr-2"
             :disabled="!tableItems.length"
           />

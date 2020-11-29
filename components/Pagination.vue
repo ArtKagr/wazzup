@@ -12,18 +12,24 @@
         limit="15"
       />
     </div>
-    <div class="d-flex align-items-center h-100">
+    <div class="d-flex align-items-center h-100 mr-4">
+      <span class="mr-2">Current page:</span>
+      <span class="btn badge-light text-truncate bg-gray-200">
+        {{ getPagination && getPagination.current_page ? getPagination.current_page : '1' }}
+      </span>
+    </div>
+    <div class="d-flex align-items-center h-100 mr-4">
+      <span class="mr-2">Per page:</span>
       <b-dd id="dropdown-status" toggle-class="py-0 text-center custom_button" variant="link" boundary="window">
         <template v-slot:button-content>
-          {{ getPagination && getPagination.per_page ? getPagination.per_page : '' }}
+          {{ getPagination && getPagination.per_page ? getPagination.per_page : 20 }}
         </template>
         <template v-for="(item, key) in limits">
           <b-dd-item-btn
-            v-if="!(item.id === 0 && filter.limit === 0)"
             :key="key"
             button-class="d-flex flex-row custom_dropdown_item"
-            :active="item.id === filter.limit"
-            @click="filter.limit = item.id"
+            :active="item.limit === filter.limit"
+            @click="setPerPage(item.limit)"
           >
             {{ item && item.text ? item.text : '' }}
           </b-dd-item-btn>
@@ -31,6 +37,7 @@
       </b-dd>
     </div>
     <div class="d-flex align-items-center h-100">
+      <span class="mr-2">Total:</span>
       <span class="btn badge-light text-truncate bg-gray-200">
         {{ getPagination && getPagination.total ? getPagination.total : '0' }}
       </span>
@@ -42,7 +49,7 @@
 export default {
   name: 'Pagination',
   props: {
-    model: {
+    source: {
       type: String,
       default: null
     }
@@ -56,11 +63,12 @@ export default {
       },
 
       limits: [
-        { id: 5, text: '5' },
-        { id: 10, text: '10' },
-        { id: 20, text: '20' },
-        { id: 50, text: '50' },
-        { id: 100, text: '100' }
+        { limit: null, text: 'All' },
+        { limit: 5, text: '5' },
+        { limit: 10, text: '10' },
+        { limit: 20, text: '20' },
+        { limit: 50, text: '50' },
+        { limit: 100, text: '100' }
       ],
 
       pagination: {
@@ -77,9 +85,9 @@ export default {
   computed: {
     getPagination () {
       let pagination
-      switch (this.model) {
-        case 'purchases':
-          pagination = this.$store.state.purchase.pagination.purchases
+      switch (this.source) {
+        case 'users':
+          pagination = this.$store.getters['users/getPagination']
           break
       }
       return pagination
@@ -90,17 +98,17 @@ export default {
       this.filter.current_page = pagination.current_page
     },
     'filter.current_page' (currentPage) {
-      switch (this.model) {
-        case 'purchases':
-          this.$store.commit('purchase/SET_CURRENT_PAGE_PURCHASES', currentPage)
+      switch (this.source) {
+        case 'users':
+          this.$store.commit('users/SET_CURRENT_PAGE', currentPage)
           break
       }
       this.filter.current_page = currentPage
     },
     'filter.limit' (limit) {
-      switch (this.model) {
-        case 'purchases':
-          this.$store.commit('purchase/SET_LIMIT_PURCHASES', limit)
+      switch (this.source) {
+        case 'users':
+          this.$store.commit('users/SET_LIMIT', limit)
           break
       }
     }
@@ -111,12 +119,19 @@ export default {
   methods: {
     limit () {
       let limit
-      switch (this.model) {
-        case 'purchases':
-          limit = this.$store.state.purchase.purchasePaginationFilter.limit
+      switch (this.users) {
+        case 'users':
+          limit = this.$store.state.users.pagination.limit
           break
       }
       return limit
+    },
+    setPerPage (perPage) {
+      let perPageCopy = perPage
+      if (!perPageCopy) {
+        perPageCopy = this.getPagination.total
+      }
+      this.$store.commit('users/SET_PER_PAGE', perPageCopy)
     }
   }
 }

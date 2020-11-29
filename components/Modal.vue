@@ -43,12 +43,12 @@ export default {
         users: [
           {
             key: 'name',
-            label: 'Имя',
+            label: 'Name',
             class: 'align-middle'
           },
           {
             key: 'address',
-            label: 'Адрес',
+            label: 'Address',
             class: 'align-middle'
           }
         ]

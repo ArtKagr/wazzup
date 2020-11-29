@@ -191,21 +191,37 @@ html {
   .page-item {
     margin-right: 16px;
 
-
     .page-link {
       padding: 0;
       background: none;
       border: none;
       color: #343a40;
 
-      .active {
-        background: red;
-      }
-
       &:focus {
         outline: none;
         box-shadow: none;
       }
+    }
+  }
+}
+
+.custom_table_row {
+  &:hover {
+    cursor: pointer;
+    opacity: 0.5;
+  }
+  &:focus {
+    outline: none;
+    cursor: pointer;
+    opacity: 0.5;
+  }
+}
+
+.custom_table_head {
+  th {
+    &:focus {
+      outline: none;
+      cursor: pointer;
     }
   }
 }

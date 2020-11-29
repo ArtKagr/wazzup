@@ -1,7 +1,9 @@
 <template>
   <b-table
     :fields="tableFields"
-    :items="filteredTableItems && filteredTableItems.length ? filteredTableItems : tableItems"
+    :items="filteredTableItems && filteredTableItems.length ? filteredTableItems : selectedItems[pagination.current_page - 1]"
+    tbody-tr-class="custom_table_row"
+    thead-tr-class="custom_table_head"
     striped
     sticky-header="100%"
     class="w-100 m-0"
@@ -29,18 +31,24 @@ export default {
         users: [
           {
             key: 'npp',
-            label: '№ п/п',
+            label: '№',
             class: 'align-middle'
           },
           {
             key: 'name',
-            label: 'Имя',
+            label: 'Name',
             class: 'align-middle',
             sortable: true
           },
           {
-            key: 'phone',
-            label: 'Телефон',
+            key: 'company',
+            label: 'Company',
+            class: 'align-middle',
+            sortable: true
+          },
+          {
+            key: 'address',
+            label: 'Address',
             class: 'align-middle',
             sortable: true
           },
@@ -51,14 +59,8 @@ export default {
             sortable: true
           },
           {
-            key: 'company',
-            label: 'Компания',
-            class: 'align-middle',
-            sortable: true
-          },
-          {
-            key: 'address',
-            label: 'Адрес',
+            key: 'add.state',
+            label: 'State',
             class: 'align-middle',
             sortable: true
           }
@@ -67,6 +69,15 @@ export default {
     }
   },
   computed: {
+    pagination () {
+      let pagination = {}
+      switch (this.source) {
+        case 'users':
+          pagination = JSON.parse(JSON.stringify(this.$store.getters['users/getPagination']))
+          break
+      }
+      return pagination
+    },
     filteredData () {
       return this.$store.getters['dictionaries/getFilteredData']
     },
@@ -81,15 +92,29 @@ export default {
           break
       }
       return items
+    },
+    selectedItems () {
+      const array = this.tableItems
+      const size = this.pagination.per_page
+      const subarray = []
+      for (let i = 0; i < Math.ceil(array.length / size); i++) {
+        subarray[i] = array.slice((i * size), (i * size) + size)
+      }
+      return subarray
     }
   },
   watch: {
     filteredData (newValue) {
-      this.filteredTableItems = this.tableItems.filter(function (tableItem) {
+      const source = this.source
+      this.filteredTableItems = this.selectedItems[this.pagination.current_page - 1].filter(function (tableItem) {
         const tableItemKeys = Object.keys(tableItem)
         if (tableItemKeys.some(function (key) {
-          if (key === 'id' || typeof tableItem[key] === 'object') {
+          if (key === 'id') {
             return false
+          } else if (typeof tableItem[key] === 'object') {
+            if (source === 'users') {
+              return tableItem[key].state.match(newValue)
+            }
           } else {
             return tableItem[key].match(newValue)
           }

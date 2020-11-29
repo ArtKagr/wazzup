@@ -12,7 +12,7 @@
           class="header-container-items-item"
           :class="active_item === key ? '-active_item' : ''"
           :to="{ name: `${link.flag}-manage` }"
-          @click="setActiveItem(key, link.flag)"
+          @click="setActiveItem(key)"
         >
           {{ link.title }}
         </b-nav-item>
@@ -27,14 +27,13 @@ export default {
   data () {
     return {
       menuItems: [
-        { flag: 'users', title: 'Пользователи' }
+        { flag: 'users', title: 'Users' }
       ],
       active_item: 'users'
     }
   },
   methods: {
-    setActiveItem (item, link) {
-      if (link === 'users') { this.$store.dispatch('users/fetchUsers') }
+    setActiveItem (item) {
       this.active_item = item
     }
   }

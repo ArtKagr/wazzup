@@ -11,6 +11,9 @@
 <script>
 import Header from '../components/Header'
 export default {
-  components: { Header }
+  components: { Header },
+  created () {
+    this.$router.push('/users/manage')
+  }
 }
 </script>

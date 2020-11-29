@@ -41,6 +41,11 @@ export default {
     // prefix: '/api/',
     baseURL: process.env.API_URL || 'https://app.dev-wazzup24.com'
   },
+  auth: {
+    redirect: {
+      home: '/users/manage',
+    }
+  },
   bootstrapVue: {
     icons: true,
     bootstrapCSS: false,
