@@ -17,7 +17,7 @@
         />
       </div>
       <div class="d-flex align-items-center w-30">
-        <b-input-group class="filter">
+        <b-input-group class="filter mr-2">
           <b-form-input
             v-model="filterData"
             placeholder="Filter"
@@ -25,6 +25,7 @@
             :disabled="!tableItems.length"
           />
         </b-input-group>
+        <span class="mr-4 pointer w-35" @click="changeFilterType(filterType)">{{ filterType }}</span>
         <b-icon-zoom-in
           v-if="filterData"
           :disabled="!tableItems.length"
@@ -68,10 +69,14 @@ export default {
   },
   data () {
     return {
+      filterType: 'Вхождение',
       filterData: null
     }
   },
   computed: {
+    entry () {
+      return this.$store.getters['users/getEntry']
+    },
     status () {
       let status = ''
       switch (this.source) {
@@ -119,6 +124,15 @@ export default {
     clearData () {
       this.filterData = null
       this.$store.commit('dictionaries/SAVE_FILTERED_DATA', null)
+    },
+    changeFilterType (filterType) {
+      if (filterType === 'Вхождение') {
+        this.filterType = 'С начала строки'
+        this.$store.commit('users/CHANGE_ENTRY', '^')
+      } else {
+        this.filterType = 'Вхождение'
+        this.$store.commit('users/CHANGE_ENTRY', '')
+      }
     }
   }
 }

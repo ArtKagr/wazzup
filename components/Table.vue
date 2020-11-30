@@ -69,6 +69,9 @@ export default {
     }
   },
   computed: {
+    entry () {
+      return this.$store.getters['users/getEntry']
+    },
     pagination () {
       let pagination = {}
       switch (this.source) {
@@ -106,6 +109,7 @@ export default {
   watch: {
     filteredData (newValue) {
       const source = this.source
+      const entry = this.entry
       this.filteredTableItems = this.selectedItems[this.pagination.current_page - 1].filter(function (tableItem) {
         const tableItemKeys = Object.keys(tableItem)
         if (tableItemKeys.some(function (key) {
@@ -113,10 +117,10 @@ export default {
             return false
           } else if (typeof tableItem[key] === 'object') {
             if (source === 'users') {
-              return tableItem[key].state.match(newValue)
+              return tableItem[key].state.match(entry + newValue)
             }
           } else {
-            return tableItem[key].match(newValue)
+            return tableItem[key].match(entry + newValue)
           }
         })) {
           return tableItem

@@ -8,14 +8,16 @@ export const state = () => ({
     last_page: null,
     per_page: 1,
     total: null
-  }
+  },
+  entry: ''
 })
 
 export const getters = {
   getStatus: state => state.status,
   getUsers: state => state.users,
   getCurrentUser: state => state.currentUser,
-  getPagination: state => state.pagination
+  getPagination: state => state.pagination,
+  getEntry: state => state.entry
 }
 
 export const mutations = {
@@ -45,6 +47,9 @@ export const mutations = {
     if (state.pagination.per_page !== perPage) {
       state.pagination.per_page = perPage
     }
+  },
+  CHANGE_ENTRY (state, entry) {
+    state.entry = entry
   }
 }
 
